@@ -41,6 +41,12 @@ public class DependencyGroup {
 
 	final List<Dependency> content = new ArrayList<>();
 
+  private Dependency dep;
+
+  void method(){
+    dep.getDescription()
+  }
+
 	/**
 	 * Return the name of this group.
 	 * @return the name of the group
