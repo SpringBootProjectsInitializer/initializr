@@ -18,7 +18,6 @@ package io.spring.initializr.generator.spring.build.gradle;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import io.spring.initializr.generator.buildsystem.BuildItemResolver;
 import io.spring.initializr.generator.buildsystem.gradle.GradleBuild;
 import io.spring.initializr.generator.buildsystem.gradle.GradleBuildSystem;
@@ -39,7 +38,6 @@ import io.spring.initializr.generator.project.ProjectGenerationConfiguration;
 import io.spring.initializr.generator.spring.build.BuildCustomizer;
 import io.spring.initializr.generator.spring.util.LambdaSafe;
 import io.spring.initializr.metadata.InitializrMetadata;
-
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -136,6 +134,14 @@ public class GradleProjectGenerationConfiguration {
 		return new GradleBuildProjectContributor(buildWriter, build, this.indentingWriterFactory, "build.gradle.kts");
 	}
 
+//	@Bean
+//	@ConditionalOnBuildSystem(id = GradleBuildSystem.ID, dialect = GradleBuildSystem.DIALECT_KOTLIN)
+//	VersionCatalogProjectContributor versionCatalogProjectContributor(GradleBuild build,
+//			IndentingWriterFactory indentingWriterFactory) {
+//		return new VersionCatalogProjectContributor(build, indentingWriterFactory, new KotlinDslGradleSettingsWriter(),
+//				"gradle/libs.version.");
+//	}
+
 	/**
 	 * Configuration specific to projects using Gradle 8.
 	 */
@@ -183,6 +189,13 @@ public class GradleProjectGenerationConfiguration {
 					new GroovyDslGradleSettingsWriter(), "settings.gradle");
 		}
 
+//		@Bean
+//		VersionCatalogProjectContributor versionCatalogProjectContributor(GradleBuild build,
+//				IndentingWriterFactory indentingWriterFactory) {
+//			return new VersionCatalogProjectContributor(build, indentingWriterFactory,
+//					new KotlinDslGradleSettingsWriter(), "libs.version.");
+//		}
+
 		@Bean
 		@ConditionalOnPlatformVersion("2.2.0.M3")
 		BuildCustomizer<GradleBuild> testTaskContributor() {
@@ -214,6 +227,13 @@ public class GradleProjectGenerationConfiguration {
 				IndentingWriterFactory indentingWriterFactory) {
 			return new SettingsGradleProjectContributor(build, indentingWriterFactory,
 					new KotlinDslGradleSettingsWriter(), "settings.gradle.kts");
+		}
+
+		@Bean
+		VersionCatalogProjectContributor versionCatalogProjectContributor(GradleBuild build,
+				IndentingWriterFactory indentingWriterFactory) {
+			return new VersionCatalogProjectContributor(build, indentingWriterFactory,
+					new KotlinDslGradleSettingsWriter(), "gradle/libs.version.toml");
 		}
 
 		@Bean

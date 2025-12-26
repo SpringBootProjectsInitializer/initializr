@@ -32,7 +32,7 @@ import io.spring.initializr.generator.project.contributor.ProjectContributor;
  * @author Andy Wilkinson
  * @author Jean-Baptiste Nizet
  */
-class SettingsGradleProjectContributor implements ProjectContributor {
+class VersionCatalogProjectContributor implements ProjectContributor {
 
   /**
    * The Gradle build.
@@ -40,34 +40,47 @@ class SettingsGradleProjectContributor implements ProjectContributor {
   private final GradleBuild build;
 
   /**
-   * The Gradle build.
+   * Factory for creating indenting writers.
    */
   private final IndentingWriterFactory indentingWriterFactory;
 
   /**
-   * The Gradle build.
+   * Writer for Gradle settings.
    */
   private final GradleSettingsWriter settingsWriter;
 
   /**
-   * The Gradle build.
+   * Name of the settings file.
    */
   private final String settingsFileName;
 
-  SettingsGradleProjectContributor(final GradleBuild gradleBuild,
-                                   final IndentingWriterFactory gradleIndentingWriterFactory, final GradleSettingsWriter gradleSettingsWriter,
-                                   final String gradleSettingsFileName) {
+  VersionCatalogProjectContributor(GradleBuild gradleBuild, IndentingWriterFactory writerFactory,
+                                   GradleSettingsWriter gradleSettingsWriter, String gradleSettingsFileName) {
     this.build = gradleBuild;
-    this.indentingWriterFactory = gradleIndentingWriterFactory;
+    this.indentingWriterFactory = writerFactory;
     this.settingsWriter = gradleSettingsWriter;
     this.settingsFileName = gradleSettingsFileName;
   }
 
   @Override
-  public void contribute(final Path projectRoot) throws IOException {
-    final Path settingsGradle = Files.createFile(projectRoot.resolve(this.settingsFileName));
-    try (IndentingWriter writer = this.indentingWriterFactory.createIndentingWriter("gradle",
-        Files.newBufferedWriter(settingsGradle))) {
+  public void contribute(Path projectRoot) throws IOException {
+    final Path catalogFile = projectRoot.resolve(this.settingsFileName);
+//    Path settingsGradle = Files.createFile(projectRoot.resolve(this.settingsFileName));
+
+//    // ✅ Ensure parent directories exist
+//    Files.createDirectories(catalogFile.getParent());
+//    try (IndentingWriter writer = this.indentingWriterFactory.createIndentingWriter("toml",
+//        Files.newBufferedWriter(settingsGradle))) {
+//      this.settingsWriter.writeTo(writer, this.build);
+//    }
+
+    // ✅ Ensure parent directories exist
+    Files.createDirectories(catalogFile.getParent());
+
+    // ✅ Create or truncate file safely
+    try (IndentingWriter writer = this.indentingWriterFactory.createIndentingWriter(
+        "toml",
+        Files.newBufferedWriter(catalogFile))) {
       this.settingsWriter.writeTo(writer, this.build);
     }
   }
